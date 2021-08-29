@@ -13,12 +13,15 @@ import 'App.scss';
 
 const Heading = ({ title }: { title: string }) => <h2>{title}</h2>;
 
+//???  use React.FunctionComponent by convention. only use FC if you need the `children` property. doing `children: React.ReactNode` is also fine if you want to be very explicit.
+
 //! uses ReactNode as type for child props
 const Box = ({ children }: { children: ReactNode }) => {
     return (
         <div style={{ padding: '1 rem', fontWeight: 'bold' }}>{children}</div>
     );
 };
+
 //! uses type FC as alias for interface FunctionComponent
 const Box2: FC = () => {
     return <div>Hi FC</div>;
