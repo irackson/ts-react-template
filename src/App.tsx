@@ -1,19 +1,18 @@
+import 'App.scss';
+import Button from 'components/Button';
 import HelloWorld from 'components/HelloWorld';
-import CleanTodos from 'components/CleanTodos';
+import CleanTodos from 'pages/CleanTodos';
 import {
-    ReactNode,
     FC,
     FunctionComponent,
+    ReactNode,
     useCallback,
-    useState,
     useEffect,
     useReducer,
     useRef,
-    ButtonHTMLAttributes,
-    DetailedHTMLProps,
+    useState,
 } from 'react';
-import { Route, Switch, Link } from 'react-router-dom';
-import 'App.scss';
+import { Link, Route, Switch } from 'react-router-dom';
 
 const Heading = ({ title }: { title: string }) => <h2>{title}</h2>;
 
@@ -94,28 +93,6 @@ const Incrementer: FC<{
 }> = ({ value, setValue }) => (
     <Button onClick={() => setValue(value + 1)}>Add - {value}</Button>
 ); */
-
-//! typing Custom Props with DetailedHTMLProps to create a DSL component
-const Button: FunctionComponent<
-    DetailedHTMLProps<
-        ButtonHTMLAttributes<HTMLButtonElement>,
-        HTMLButtonElement
-    > & { title?: string }
-> = ({ title, children, style, ...rest }) => (
-    <button
-        {...rest}
-        style={{
-            ...style,
-            backgroundColor: 'red',
-            color: 'white',
-            fontSize: 'xx-large',
-        }}
-    >
-        {/* super cool syntax */}
-        {/* {title ?? children} */}
-        {title ? `t: ${title}` : children}
-    </button>
-);
 
 function App() {
     //! custom callback
