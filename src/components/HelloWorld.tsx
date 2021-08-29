@@ -1,11 +1,11 @@
 import { FC } from 'react';
 
-interface MainProps {
+interface HelloWorldProps {
     foo: number;
     bar: string;
 }
 
-const Main: FC<MainProps> = (props) => {
+const HelloWorld: FC<HelloWorldProps> = (props) => {
     return (
         <>
             foo: {props.foo}, bar: {props.bar}
@@ -13,4 +13,4 @@ const Main: FC<MainProps> = (props) => {
     );
 };
 
-export default Main;
+export default HelloWorld;

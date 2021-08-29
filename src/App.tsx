@@ -1,4 +1,5 @@
-import Main from 'components/Main';
+import HelloWorld from 'components/HelloWorld';
+import CleanTodos from 'components/CleanTodos';
 import {
     ReactNode,
     FC,
@@ -11,7 +12,9 @@ import {
     ButtonHTMLAttributes,
     DetailedHTMLProps,
 } from 'react';
+import { Route, Switch, Link } from 'react-router-dom';
 import 'App.scss';
+
 const Heading = ({ title }: { title: string }) => <h2>{title}</h2>;
 
 //???  use React.FunctionComponent by convention. only use FC if you need the `children` property. doing `children: React.ReactNode` is also fine if you want to be very explicit.
@@ -53,6 +56,10 @@ interface Todo {
     text: string;
 }
 
+interface Payload {
+    text: string;
+}
+
 type ActionType =
     | {
           type: 'ADD';
@@ -62,10 +69,6 @@ type ActionType =
           type: 'REMOVE';
           id: number;
       };
-
-interface Payload {
-    text: string;
-}
 
 //! clean version of using ReturnType (a utility type) to type useState as props in a Custom Hook 😀
 //* allows DRY changing of ex. number to string
@@ -173,36 +176,62 @@ function App() {
 
     return (
         <div className="App">
-            <Heading title="Introduction" />
-            <Box>Hello there</Box>
-            <Box2></Box2>
-            <Box3> </Box3>
-            <Box>{payload?.text}</Box>
-            <List items={['one', 'two', 'three']} onClick={onListClick}></List>
-            <Main foo={5} bar={'Hello World'}></Main>
-            <Incrementer value={value} setValue={setValue} />
+            <Link to={'/'}>Home</Link>
+            <span> | </span>
+            <Link to={'/clean-todos'}>Clean Todos</Link>
+            <Switch>
+                <Route
+                    exact
+                    path="/"
+                    render={(rp) => (
+                        <div>
+                            <HelloWorld
+                                foo={5}
+                                bar={'Hello World'}
+                            ></HelloWorld>
+                            <Heading title="Introduction" />
+                            <Box>Hello there</Box>
+                            <Box2></Box2>
+                            <Box3> </Box3>
+                            <Box>{payload?.text}</Box>
+                            <List
+                                items={['one', 'two', 'three']}
+                                onClick={onListClick}
+                            ></List>
+                            <Incrementer value={value} setValue={setValue} />
 
-            <Heading title="Todos" />
-            {todos.map((todo, index) => (
-                <div key={index}>
-                    {todo.text}
-                    <Button
-                        onClick={() =>
-                            dispatch({ type: 'REMOVE', id: todo.id })
-                        }
-                    >
-                        Remove
-                    </Button>
-                </div>
-            ))}
-            <div>
-                <input type="text" ref={newTodoRef} />
-                <Button
-                    onClick={onAddTodo}
-                    style={{ textDecoration: 'underline' }}
-                    title={'Add Todo'}
-                ></Button>
-            </div>
+                            <Heading title="Todos" />
+                            {todos.map((todo, index) => (
+                                <div key={index}>
+                                    {todo.text}
+                                    <Button
+                                        onClick={() =>
+                                            dispatch({
+                                                type: 'REMOVE',
+                                                id: todo.id,
+                                            })
+                                        }
+                                    >
+                                        Remove
+                                    </Button>
+                                </div>
+                            ))}
+                            <div>
+                                <input type="text" ref={newTodoRef} />
+                                <Button
+                                    onClick={onAddTodo}
+                                    style={{ textDecoration: 'underline' }}
+                                    title={'Add Todo'}
+                                ></Button>
+                            </div>
+                        </div>
+                    )}
+                />
+                <Route
+                    path="/clean-todos"
+                    render={(rp) => <CleanTodos rp={rp} blah={'hi'} />}
+                />
+            </Switch>
         </div>
     );
 }
