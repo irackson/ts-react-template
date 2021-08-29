@@ -8,9 +8,10 @@ import {
     useEffect,
     useReducer,
     useRef,
+    ButtonHTMLAttributes,
+    DetailedHTMLProps,
 } from 'react';
 import 'App.scss';
-
 const Heading = ({ title }: { title: string }) => <h2>{title}</h2>;
 
 //???  use React.FunctionComponent by convention. only use FC if you need the `children` property. doing `children: React.ReactNode` is also fine if you want to be very explicit.
@@ -46,10 +47,6 @@ const List: FC<{
     );
 };
 
-interface Payload {
-    text: string;
-}
-
 interface Todo {
     id: number;
     done: boolean;
@@ -65,6 +62,57 @@ type ActionType =
           type: 'REMOVE';
           id: number;
       };
+
+interface Payload {
+    text: string;
+}
+
+//! clean version of using ReturnType (a utility type) to type useState as props in a Custom Hook 😀
+//* allows DRY changing of ex. number to string
+const useNumber = (initialValue: number) => useState<number>(initialValue);
+
+type UseNumberValue = ReturnType<typeof useNumber>[0];
+type UseNumberSetValue = ReturnType<typeof useNumber>[1];
+
+const Incrementer: FC<{
+    value: UseNumberValue;
+    setValue: UseNumberSetValue;
+}> = ({ value, setValue }) => (
+    <Button
+        onClick={() => setValue(value + 1)}
+        title={`Add - ${value}`}
+    ></Button>
+);
+
+//! verbose version of typing useState as props
+/* const Incrementer: FC<{
+    value: number;
+    setValue: React.Dispatch<React.SetStateAction<number>>;
+}> = ({ value, setValue }) => (
+    <Button onClick={() => setValue(value + 1)}>Add - {value}</Button>
+); */
+
+//! typing Custom Props with DetailedHTMLProps to create a DSL component
+const Button: FunctionComponent<
+    DetailedHTMLProps<
+        ButtonHTMLAttributes<HTMLButtonElement>,
+        HTMLButtonElement
+    > & { title?: string }
+> = ({ title, children, style, ...rest }) => (
+    <button
+        {...rest}
+        style={{
+            ...style,
+            backgroundColor: 'red',
+            color: 'white',
+            fontSize: 'xx-large',
+        }}
+    >
+        {/* super cool syntax */}
+        {/* {title ?? children} */}
+        {title ? `t: ${title}` : children}
+    </button>
+);
 
 function App() {
     //! custom callback
@@ -121,6 +169,8 @@ function App() {
         }
     }, []);
 
+    const [value, setValue] = useNumber(0);
+
     return (
         <div className="App">
             <Heading title="Introduction" />
@@ -130,26 +180,29 @@ function App() {
             <Box>{payload?.text}</Box>
             <List items={['one', 'two', 'three']} onClick={onListClick}></List>
             <Main foo={5} bar={'Hello World'}></Main>
+            <Incrementer value={value} setValue={setValue} />
 
             <Heading title="Todos" />
             {todos.map((todo, index) => (
                 <div key={index}>
                     {todo.text}
-                    <button
+                    <Button
                         onClick={() =>
                             dispatch({ type: 'REMOVE', id: todo.id })
                         }
                     >
                         Remove
-                    </button>
+                    </Button>
                 </div>
             ))}
             <div>
                 <input type="text" ref={newTodoRef} />
-                <button onClick={onAddTodo}>Add Todo</button>
+                <Button
+                    onClick={onAddTodo}
+                    style={{ textDecoration: 'underline' }}
+                    title={'Add Todo'}
+                ></Button>
             </div>
-
-            {/* <Heading title="Todos"> </Heading> */}
         </div>
     );
 }
