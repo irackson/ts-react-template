@@ -1,13 +1,8 @@
+import { v1 as uuidv1 } from 'uuid';
+
 import Button from 'components/Button';
 import { useTodos } from 'hooks/useTodos';
-import {
-    FC,
-    FunctionComponent,
-    ReactNode,
-    useCallback,
-    useEffect,
-    useRef,
-} from 'react';
+import { FC, useCallback, useEffect, useRef } from 'react';
 import { RouteComponentProps, StaticContext } from 'react-router';
 
 interface CleanTodosProps {
@@ -25,7 +20,7 @@ const CleanTodos: FC<CleanTodosProps & RouterProps> = ({ rp, blah }) => {
     }, [rp, blah]);
 
     const { todos, addTodo, removeTodo } = useTodos([
-        { id: 0, text: 'Hey there', done: false },
+        { id: uuidv1(), text: 'Hey there', done: false },
     ]);
 
     //! useRef hook

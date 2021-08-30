@@ -2,6 +2,7 @@ import 'App.scss';
 import Button from 'components/Button';
 import HelloWorld from 'components/HelloWorld';
 import CleanTodos from 'pages/CleanTodos';
+import GenericList from 'pages/GenericList';
 import {
     FC,
     FunctionComponent,
@@ -156,6 +157,8 @@ function App() {
             <Link to={'/'}>Home</Link>
             <span> | </span>
             <Link to={'/clean-todos'}>Clean Todos</Link>
+            <span> | </span>
+            <Link to={'/generic-list'}>Generic List</Link>
             <Switch>
                 <Route
                     exact
@@ -207,6 +210,10 @@ function App() {
                 <Route
                     path="/clean-todos"
                     render={(rp) => <CleanTodos rp={rp} blah={'hi'} />}
+                />
+                <Route
+                    path="/generic-list"
+                    render={(rp) => <GenericList rp={rp} />}
                 />
             </Switch>
         </div>

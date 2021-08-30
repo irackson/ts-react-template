@@ -1,7 +1,9 @@
+import { v1 as uuidv1 } from 'uuid';
+
 import { useCallback, useReducer } from 'react';
 
 interface Todo {
-    id: number;
+    id: string;
     done: boolean;
     text: string;
 }
@@ -13,12 +15,12 @@ type ActionType =
       }
     | {
           type: 'REMOVE';
-          id: number;
+          id: string;
       };
 export function useTodos(initialTodos: Todo[]): {
     todos: Todo[];
     addTodo: (text: string) => void;
-    removeTodo: (id: number) => void;
+    removeTodo: (id: string) => void;
 } {
     //! useReducer hook
     const [todos, dispatch] = useReducer(
@@ -28,7 +30,7 @@ export function useTodos(initialTodos: Todo[]): {
                     return [
                         ...state,
                         {
-                            id: state.length,
+                            id: uuidv1(),
                             text: action.text,
                             done: false,
                         },
@@ -49,7 +51,7 @@ export function useTodos(initialTodos: Todo[]): {
         });
     }, []);
 
-    const removeTodo = useCallback((id: number) => {
+    const removeTodo = useCallback((id: string) => {
         dispatch({
             type: 'REMOVE',
             id,
