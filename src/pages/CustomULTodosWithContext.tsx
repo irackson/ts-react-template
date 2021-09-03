@@ -1,7 +1,12 @@
 import { v1 as uuidv1 } from 'uuid';
 
 import Button from 'components/Button';
-import { useTodos } from 'hooks/useTodos';
+import {
+    useTodos,
+    useAddTodo,
+    useRemoveTodo,
+    TodosProvider,
+} from 'hooks/useContextTodos';
 import { FC, ReactNode, useCallback, useRef } from 'react';
 import { RouteComponentProps, StaticContext } from 'react-router';
 
@@ -62,9 +67,9 @@ const UL = <T extends {}>({
 };
 
 const GenericList: FC<{ title: string }> = ({ title }) => {
-    const { todos, addTodo, removeTodo } = useTodos([
-        { id: uuidv1(), text: 'Hey there', done: false },
-    ]);
+    const todos = useTodos();
+    const addTodo = useAddTodo();
+    const removeTodo = useRemoveTodo();
 
     //! useRef hook
     const newTodoRef = useRef<HTMLInputElement>(null);
@@ -82,7 +87,7 @@ const GenericList: FC<{ title: string }> = ({ title }) => {
             <h2>{title}</h2>
             <UL
                 className="i__have__a__className__xD"
-                style={{ margin: '0', padding: '0' }}
+                style={{ margin: '1rem', padding: '1rem', listStyle: 'none' }}
                 itemClick={(item) => alert(`${item.id}: ${item.text}`)}
                 items={todos}
                 render={(todo) => (
@@ -113,16 +118,26 @@ const GenericList: FC<{ title: string }> = ({ title }) => {
     );
 };
 
+const JustShowTodos = () => {
+    const todos = useTodos();
+    return <UL items={todos} render={(todo) => <div>{todo.text}</div>} />;
+};
+
 const ContextWrapper: FC<GenericListsProps & RouterProps> = ({
     rp,
     listTitles,
 }) => {
     return (
-        <div style={{ display: 'grid', gridTemplateColumns: '50% 50%' }}>
-            {listTitles.map((title) => (
-                <GenericList title={title} />
-            ))}
-        </div>
+        <TodosProvider
+            initialTodos={[{ id: uuidv1(), text: 'Click Me!', done: false }]}
+        >
+            <div style={{ display: 'grid', gridTemplateColumns: '50% 50%' }}>
+                {listTitles.map((title, i) => (
+                    <GenericList key={i} title={title} />
+                ))}
+            </div>
+            <JustShowTodos />
+        </TodosProvider>
     );
 };
 

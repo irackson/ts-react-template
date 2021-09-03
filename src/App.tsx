@@ -2,7 +2,7 @@ import 'App.scss';
 import Button from 'components/Button';
 import HelloWorld from 'components/HelloWorld';
 import CleanTodos from 'pages/CleanTodos';
-import GenericListsWrappedWithContext from 'pages/GenericList';
+import GenericListsWrappedWithContext from 'pages/CustomULTodosWithContext';
 import {
     FC,
     FunctionComponent,
