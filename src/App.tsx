@@ -2,7 +2,7 @@ import 'App.scss';
 import Button from 'components/Button';
 import HelloWorld from 'components/HelloWorld';
 import CleanTodos from 'pages/CleanTodos';
-import GenericList from 'pages/GenericList';
+import GenericListsWrappedWithContext from 'pages/GenericList';
 import {
     FC,
     FunctionComponent,
@@ -213,7 +213,12 @@ function App() {
                 />
                 <Route
                     path="/generic-list"
-                    render={(rp) => <GenericList rp={rp} />}
+                    render={(rp) => (
+                        <GenericListsWrappedWithContext
+                            rp={rp}
+                            listTitles={['A List', 'Another List']}
+                        />
+                    )}
                 />
             </Switch>
         </div>

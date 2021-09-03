@@ -5,7 +5,9 @@ import { useTodos } from 'hooks/useTodos';
 import { FC, ReactNode, useCallback, useRef } from 'react';
 import { RouteComponentProps, StaticContext } from 'react-router';
 
-interface GenericListProps {}
+interface GenericListsProps {
+    listTitles: string[];
+}
 
 interface RouterProps {
     rp: RouteComponentProps<{}, StaticContext, unknown>;
@@ -59,7 +61,7 @@ const UL = <T extends {}>({
     );
 };
 
-const GenericList: FC<GenericListProps & RouterProps> = ({ rp }) => {
+const GenericList: FC<{ title: string }> = ({ title }) => {
     const { todos, addTodo, removeTodo } = useTodos([
         { id: uuidv1(), text: 'Hey there', done: false },
     ]);
@@ -77,7 +79,7 @@ const GenericList: FC<GenericListProps & RouterProps> = ({ rp }) => {
 
     return (
         <div>
-            <h2>Generic Todos</h2>
+            <h2>{title}</h2>
             <UL
                 className="i__have__a__className__xD"
                 style={{ margin: '0', padding: '0' }}
@@ -111,4 +113,17 @@ const GenericList: FC<GenericListProps & RouterProps> = ({ rp }) => {
     );
 };
 
-export default GenericList;
+const ContextWrapper: FC<GenericListsProps & RouterProps> = ({
+    rp,
+    listTitles,
+}) => {
+    return (
+        <div style={{ display: 'grid', gridTemplateColumns: '50% 50%' }}>
+            {listTitles.map((title) => (
+                <GenericList title={title} />
+            ))}
+        </div>
+    );
+};
+
+export default ContextWrapper;
