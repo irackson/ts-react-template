@@ -8,10 +8,6 @@ interface CleanTodosProps {
     blah: string;
 }
 
-// interface RouterProps {
-//     rp: RouteComponentProps<{}, StaticContext, unknown>;
-// }
-
 const CleanTodos: FC<CleanTodosProps & RouteComponentProps> = ({
     blah,
     history,

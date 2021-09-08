@@ -1,20 +1,12 @@
 import { v1 as uuidv1 } from 'uuid';
 
-import { useCallback, useReducer, useContext, createContext, FC } from 'react';
+import { useCallback, useReducer } from 'react';
 
 interface Todo {
     id: string;
     done: boolean;
     text: string;
 }
-
-type UseTodosManagerResult = ReturnType<typeof useTodosManager>;
-
-const TodoContext = createContext<UseTodosManagerResult>({
-    todos: [],
-    addTodo: () => {},
-    removeTodo: () => {},
-});
 
 type ActionType =
     | {
@@ -25,7 +17,7 @@ type ActionType =
           type: 'REMOVE';
           id: string;
       };
-function useTodosManager(initialTodos: Todo[]): {
+export function useTodos(initialTodos: Todo[]): {
     todos: Todo[];
     addTodo: (text: string) => void;
     removeTodo: (id: string) => void;
@@ -68,26 +60,3 @@ function useTodosManager(initialTodos: Todo[]): {
 
     return { todos, addTodo, removeTodo };
 }
-
-export const TodosProvider: FC<{
-    initialTodos: Todo[];
-}> = ({ initialTodos, children }) => (
-    <TodoContext.Provider value={useTodosManager(initialTodos)}>
-        {children}
-    </TodoContext.Provider>
-);
-
-export const useTodos = (): Todo[] => {
-    const { todos } = useContext(TodoContext);
-    return todos;
-};
-
-export const useAddTodo = (): UseTodosManagerResult['addTodo'] => {
-    const { addTodo } = useContext(TodoContext);
-    return addTodo;
-};
-
-export const useRemoveTodo = (): UseTodosManagerResult['removeTodo'] => {
-    const { removeTodo } = useContext(TodoContext);
-    return removeTodo;
-};
