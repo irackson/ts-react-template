@@ -3,6 +3,7 @@ import Button from 'components/Button';
 import HelloWorld from 'components/HelloWorld';
 import CleanTodos from 'pages/CleanTodos';
 import GenericListsWrappedWithContext from 'pages/CustomULTodosWithContext';
+import GlobalTodos from 'pages/GlobalTodos';
 import {
     FC,
     FunctionComponent,
@@ -13,8 +14,7 @@ import {
     useRef,
     useState,
 } from 'react';
-import { Link, Route, Switch } from 'react-router-dom';
-
+import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
 const Heading = ({ title }: { title: string }) => <h2>{title}</h2>;
 
 //???  use React.FunctionComponent by convention. only use FC if you need the `children` property. doing `children: React.ReactNode` is also fine if you want to be very explicit.
@@ -22,7 +22,11 @@ const Heading = ({ title }: { title: string }) => <h2>{title}</h2>;
 //! uses ReactNode as type for child props
 const Box = ({ children }: { children: ReactNode }) => {
     return (
-        <div style={{ padding: '1 rem', fontWeight: 'bold' }}>{children}</div>
+        <div
+            style={{ padding: '1 rem', fontWeight: 'bold', color: 'goldenrod' }}
+        >
+            {children}
+        </div>
     );
 };
 
@@ -153,75 +157,87 @@ function App() {
     const [value, setValue] = useNumber(0);
 
     return (
-        <div className="App">
-            <Link to={'/'}>Home</Link>
-            <span> | </span>
-            <Link to={'/clean-todos'}>Clean Todos</Link>
-            <span> | </span>
-            <Link to={'/generic-list'}>Generic List</Link>
-            <Switch>
-                <Route
-                    exact
-                    path="/"
-                    render={(rp) => (
-                        <div>
-                            <HelloWorld
-                                foo={5}
-                                bar={'Hello World'}
-                            ></HelloWorld>
-                            <Heading title="Introduction" />
-                            <Box>Hello there</Box>
-                            <Box2></Box2>
-                            <Box3> </Box3>
-                            <Box>{payload?.text}</Box>
-                            <List
-                                items={['one', 'two', 'three']}
-                                onClick={onListClick}
-                            ></List>
-                            <Incrementer value={value} setValue={setValue} />
-
-                            <Heading title="Todos" />
-                            {todos.map((todo, index) => (
-                                <div key={index}>
-                                    {todo.text}
-                                    <Button
-                                        onClick={() =>
-                                            dispatch({
-                                                type: 'REMOVE',
-                                                id: todo.id,
-                                            })
-                                        }
-                                    >
-                                        Remove
-                                    </Button>
-                                </div>
-                            ))}
+        <BrowserRouter>
+            <div className="App">
+                <Link to={'/'}>Home</Link>
+                <span> | </span>
+                <Link to={'/clean-todos'}>Clean Todos</Link>
+                <span> | </span>
+                <Link to={'/generic-lists'}>Generic Lists</Link>
+                <span> | </span>
+                <Link to={'/global-todos'}>Global State</Link>
+                <Switch>
+                    <Route
+                        exact
+                        path="/"
+                        render={(rp) => (
                             <div>
-                                <input type="text" ref={newTodoRef} />
-                                <Button
-                                    onClick={onAddTodo}
-                                    style={{ textDecoration: 'underline' }}
-                                    title={'Add Todo'}
-                                ></Button>
+                                <HelloWorld
+                                    foo={5}
+                                    bar={'Hello World'}
+                                ></HelloWorld>
+                                <Heading title="Introduction" />
+                                <Box>Hello there</Box>
+                                <Box2></Box2>
+                                <Box3> </Box3>
+                                <Box>{payload?.text}</Box>
+                                <List
+                                    items={['one', 'two', 'three']}
+                                    onClick={onListClick}
+                                ></List>
+                                <Incrementer
+                                    value={value}
+                                    setValue={setValue}
+                                />
+                                <Heading title="Todos" />
+                                {todos.map((todo, index) => (
+                                    <div key={index}>
+                                        {todo.text}
+                                        <Button
+                                            onClick={() =>
+                                                dispatch({
+                                                    type: 'REMOVE',
+                                                    id: todo.id,
+                                                })
+                                            }
+                                        >
+                                            Remove
+                                        </Button>
+                                    </div>
+                                ))}
+                                <div>
+                                    <input type="text" ref={newTodoRef} />
+                                    <Button
+                                        onClick={onAddTodo}
+                                        style={{ textDecoration: 'underline' }}
+                                        title={'Add Todo'}
+                                    ></Button>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                />
-                <Route
-                    path="/clean-todos"
-                    render={(rp) => <CleanTodos rp={rp} blah={'hi'} />}
-                />
-                <Route
-                    path="/generic-list"
-                    render={(rp) => (
-                        <GenericListsWrappedWithContext
-                            rp={rp}
-                            listTitles={['A List', 'Another List']}
-                        />
-                    )}
-                />
-            </Switch>
-        </div>
+                        )}
+                    />
+                    <Route
+                        path="/clean-todos"
+                        render={(rp) => <CleanTodos {...rp} blah={'hi'} />}
+                    />
+                    <Route
+                        path="/generic-lists"
+                        render={(rp) => (
+                            <GenericListsWrappedWithContext
+                                rp={rp}
+                                listTitles={['A List', 'Another List']}
+                            />
+                        )}
+                    />
+                    <Route
+                        path="/global-todos"
+                        render={(rp) => (
+                            <GlobalTodos {...rp} title="Global Todos" />
+                        )}
+                    />
+                </Switch>
+            </div>
+        </BrowserRouter>
     );
 }
 

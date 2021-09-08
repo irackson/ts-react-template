@@ -3,21 +3,23 @@ import { v1 as uuidv1 } from 'uuid';
 import Button from 'components/Button';
 import { useTodos } from 'hooks/useTodos';
 import { FC, useCallback, useEffect, useRef } from 'react';
-import { RouteComponentProps, StaticContext } from 'react-router';
-
+import { RouteComponentProps } from 'react-router-dom';
 interface CleanTodosProps {
     blah: string;
 }
 
-interface RouterProps {
-    rp: RouteComponentProps<{}, StaticContext, unknown>;
-}
+// interface RouterProps {
+//     rp: RouteComponentProps<{}, StaticContext, unknown>;
+// }
 
-const CleanTodos: FC<CleanTodosProps & RouterProps> = ({ rp, blah }) => {
+const CleanTodos: FC<CleanTodosProps & RouteComponentProps> = ({
+    blah,
+    history,
+}) => {
     useEffect(() => {
-        console.log('rp: ', rp.history.location.pathname);
+        console.log('rp: ', history.location.pathname);
         console.log('fc props: ', blah);
-    }, [rp, blah]);
+    }, [history, blah]);
 
     const { todos, addTodo, removeTodo } = useTodos([
         { id: uuidv1(), text: 'Hey there', done: false },
