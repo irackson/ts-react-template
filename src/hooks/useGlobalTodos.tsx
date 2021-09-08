@@ -1,6 +1,6 @@
+import { useCallback, useEffect } from 'react';
+import { createGlobalState } from 'react-use';
 import { v1 as uuidv1 } from 'uuid';
-
-import { useCallback, useReducer } from 'react';
 
 interface Todo {
     id: string;
@@ -8,55 +8,39 @@ interface Todo {
     text: string;
 }
 
-type ActionType =
-    | {
-          type: 'ADD';
-          text: string;
-      }
-    | {
-          type: 'REMOVE';
-          id: string;
-      };
+const useGlobalTodos = createGlobalState<Todo[]>([]);
+
 export function useTodos(initialTodos: Todo[]): {
     todos: Todo[];
     addTodo: (text: string) => void;
     removeTodo: (id: string) => void;
 } {
-    //! useReducer hook
-    const [todos, dispatch] = useReducer(
-        (state: Todo[], action: ActionType) => {
-            switch (action.type) {
-                case 'ADD':
-                    return [
-                        ...state,
-                        {
-                            id: uuidv1(),
-                            text: action.text,
-                            done: false,
-                        },
-                    ];
-                case 'REMOVE':
-                    return state.filter(({ id }) => id !== action.id);
-                default:
-                    throw new Error();
-            }
+    const [todos, setTodos] = useGlobalTodos();
+
+    useEffect(() => {
+        setTodos(initialTodos);
+    }, [initialTodos, setTodos]);
+
+    const addTodo = useCallback(
+        (text: string) => {
+            setTodos([
+                ...todos,
+                {
+                    id: uuidv1(),
+                    text: text,
+                    done: false,
+                },
+            ]);
         },
-        initialTodos
+        [todos, setTodos]
     );
 
-    const addTodo = useCallback((text: string) => {
-        dispatch({
-            type: 'ADD',
-            text,
-        });
-    }, []);
-
-    const removeTodo = useCallback((id: string) => {
-        dispatch({
-            type: 'REMOVE',
-            id,
-        });
-    }, []);
+    const removeTodo = useCallback(
+        (removeId: string) => {
+            setTodos(todos.filter(({ id }) => id !== removeId));
+        },
+        [todos, setTodos]
+    );
 
     return { todos, addTodo, removeTodo };
 }

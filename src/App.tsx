@@ -232,7 +232,14 @@ function App() {
                     <Route
                         path="/global-todos"
                         render={(rp) => (
-                            <GlobalTodos {...rp} title="Global Todos" />
+                            <GlobalTodos
+                                {...rp}
+                                listTitles={[
+                                    'Global Uno',
+                                    'Global Dos',
+                                    'tres',
+                                ]}
+                            />
                         )}
                     />
                 </Switch>

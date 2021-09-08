@@ -7,8 +7,9 @@ import {
     useRemoveTodo,
     TodosProvider,
 } from 'hooks/useContextTodos';
-import { FC, ReactNode, useCallback, useRef } from 'react';
+import { FC, useCallback, useRef } from 'react';
 import { RouteComponentProps, StaticContext } from 'react-router';
+import UL from 'components/CustomUL';
 
 interface GenericListsProps {
     listTitles: string[];
@@ -17,54 +18,6 @@ interface GenericListsProps {
 interface RouterProps {
     rp: RouteComponentProps<{}, StaticContext, unknown>;
 }
-
-//! Generic Component function syntax
-/* function UL<T>({
-	items,
-	render,
-}: {
-	items: T[];
-	render: (item: T) => ReactNode;
-}) {
-	return (
-		<ul>
-			{items.map((item, index) => (
-				<li key={index}>{render(item)}</li>
-			))}
-		</ul>
-	);
-} */
-
-//! Generic Component arrow syntax with button props
-//? for arrow function, must use T extends {} in jsx
-//? https://stackoverflow.com/questions/41112313/how-to-use-generics-with-arrow-functions-in-typescript-jsx-with-react/41112882#41112882
-const UL = <T extends {}>({
-    items,
-    render,
-    itemClick,
-    style,
-    children,
-}: React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLUListElement>,
-    HTMLUListElement
-> & {
-    items: T[];
-    render: (item: T) => ReactNode;
-    itemClick?: (item: T) => void;
-}) => {
-    return (
-        <ul style={{ ...style, color: 'blue' }}>
-            {items.map((item, index) => (
-                <li
-                    key={index}
-                    onClick={() => (itemClick ? itemClick(item) : null)}
-                >
-                    {render(item)}
-                </li>
-            ))}
-        </ul>
-    );
-};
 
 const GenericList: FC<{ title: string }> = ({ title }) => {
     const todos = useTodos();
