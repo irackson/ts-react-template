@@ -8,7 +8,7 @@ interface CleanTodosProps {
 
 const authData = {
   apiLoginID: '3C5rS7f6',
-  clientKey: '3suNtMtv25HbrMBfc5r3UMgCy24tM4V8kwvVcXNS6v52vP8GAKe2CQ4fmRN9njUy',
+  clientKey: '4jT2ZdGdT8h5zEj6pbqf5HLY3wpahskveWZJRtGMgn6F56B8844gXEA448xB2cfx',
 };
 
 type BasicCardInfo = {
