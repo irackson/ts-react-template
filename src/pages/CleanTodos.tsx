@@ -1,56 +1,85 @@
-import { v1 as uuidv1 } from 'uuid';
+import { FC, useState } from 'react';
+import { useAcceptJs } from 'react-acceptjs';
 
-import Button from 'components/Button';
-import { useTodos } from 'hooks/useTodos';
-import { FC, useCallback, useEffect, useRef } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 interface CleanTodosProps {
-    blah: string;
+  blah: string;
 }
 
+const authData = {
+  apiLoginID: '3C5rS7f6',
+  clientKey: '3suNtMtv25HbrMBfc5r3UMgCy24tM4V8kwvVcXNS6v52vP8GAKe2CQ4fmRN9njUy',
+};
+
+type BasicCardInfo = {
+  cardNumber: string;
+  cardCode: string;
+  month: string;
+  year: string;
+};
+
 const CleanTodos: FC<CleanTodosProps & RouteComponentProps> = ({
-    blah,
-    history,
+  blah,
+  history,
 }) => {
-    useEffect(() => {
-        console.log('rp: ', history.location.pathname);
-        console.log('fc props: ', blah);
-    }, [history, blah]);
+  const { dispatchData, loading, error } = useAcceptJs({ authData });
+  const [cardData, setCardData] = useState<BasicCardInfo>({
+    cardNumber: '',
+    month: '',
+    year: '',
+    cardCode: '',
+  });
 
-    const { todos, addTodo, removeTodo } = useTodos([
-        { id: uuidv1(), text: 'Hey there', done: false },
-    ]);
+  const handleSubmit = async (event: any) => {
+    event.preventDefault();
+    // Dispatch CC data to Authorize.net and receive payment nonce for use on your server
+    const response = await dispatchData({ cardData });
+    console.log('Received response:', response);
+  };
 
-    //! useRef hook
-    const newTodoRef = useRef<HTMLInputElement>(null);
-
-    // //! another useCallback event handler
-    const onAddTodo = useCallback(() => {
-        if (newTodoRef.current) {
-            addTodo(newTodoRef.current.value);
-            newTodoRef.current.value = '';
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        name="cardNumber"
+        value={cardData.cardNumber}
+        onChange={(event) =>
+          setCardData({ ...cardData, cardNumber: event.target.value })
         }
-    }, [addTodo]);
-
-    return (
-        <div>
-            <h2>Clean Todos</h2>
-            {todos.map((todo, index) => (
-                <div key={index}>
-                    {todo.text}
-                    <Button onClick={() => removeTodo(todo.id)}>Remove</Button>
-                </div>
-            ))}
-            <div>
-                <input type="text" ref={newTodoRef} />
-                <Button
-                    onClick={onAddTodo}
-                    style={{ textDecoration: 'underline' }}
-                    title={'Add Todo'}
-                ></Button>
-            </div>
-        </div>
-    );
+        placeholder="Card Number"
+      />
+      <input
+        type="text"
+        name="month"
+        value={cardData.month}
+        placeholder="Expiration Month"
+        onChange={(event) =>
+          setCardData({ ...cardData, month: event.target.value })
+        }
+      />
+      <input
+        type="text"
+        name="year"
+        value={cardData.year}
+        placeholder="Expiration Year"
+        onChange={(event) =>
+          setCardData({ ...cardData, year: event.target.value })
+        }
+      />
+      <input
+        type="text"
+        name="cardCode"
+        value={cardData.cardCode}
+        onChange={(event) =>
+          setCardData({ ...cardData, cardCode: event.target.value })
+        }
+        placeholder="CVV"
+      />
+      <button type="submit" disabled={loading || error}>
+        Pay
+      </button>
+    </form>
+  );
 };
 
 export default CleanTodos;
